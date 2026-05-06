@@ -30,6 +30,8 @@ const yearInput = document.querySelector("#yearInput");
 const loadButton = document.querySelector("#loadButton");
 const calendarEl = document.querySelector("#calendar");
 const summaryEl = document.querySelector("#summary");
+const todayDateLabelEl = document.querySelector("#todayDateLabel");
+const todayScheduleEl = document.querySelector("#todaySchedule");
 
 const today = new Date();
 
@@ -45,7 +47,58 @@ yearInput.value = String(today.getFullYear());
 
 loadButton.addEventListener("click", loadSchedule);
 
+loadTodaySchedule();
 loadSchedule();
+
+async function loadTodaySchedule() {
+  const todayMonth = today.getMonth() + 1;
+  const todayYear = today.getFullYear();
+
+  try {
+    const res = await fetch(
+      `/.netlify/functions/get-schedule?month=${todayMonth}&year=${todayYear}`
+    );
+
+    const json = await res.json();
+
+    if (!res.ok) {
+      throw new Error(json.error || "Gagal mengambil jadwal hari ini.");
+    }
+
+    renderTodaySchedule(today, json.overrides || []);
+  } catch (error) {
+    todayScheduleEl.innerHTML = `<p class="error">${error.message}</p>`;
+  }
+}
+
+function renderTodaySchedule(date, overrides) {
+  const dateLabel = new Intl.DateTimeFormat("id-ID", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric"
+  }).format(date);
+
+  todayDateLabelEl.textContent = dateLabel;
+
+  const rows = shifts
+    .map((shiftName) => {
+      const baseGuard = getBaseGuard(date, shiftName);
+      const actualGuard = getActualGuard(date, shiftName, overrides);
+      const isChanged = baseGuard !== actualGuard;
+
+      return `
+        <div class="today-shift ${isChanged ? "changed" : ""}">
+          <span>${shiftName}</span>
+          <strong>${actualGuard}</strong>
+          ${isChanged ? `<small>Diganti dari ${baseGuard}</small>` : ""}
+        </div>
+      `;
+    })
+    .join("");
+
+  todayScheduleEl.innerHTML = rows;
+}
 
 async function loadSchedule() {
   const month = Number(monthSelect.value);
