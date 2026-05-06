@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jadwal Jaga Satpam</title>
+  </head>
+  <body>
+    <div id="app">
+      <header class="header">
+        <div>
+          <h1>Jadwal Jaga Satpam</h1>
+          <p>Made, Irfan, dan Hendra</p>
+        </div>
+      </header>
+
+      <section class="controls">
+        <label>
+          Bulan
+          <select id="monthSelect"></select>
+        </label>
+
+        <label>
+          Tahun
+          <input id="yearInput" type="number" min="2020" max="2100" />
+        </label>
+
+        <button id="loadButton">Tampilkan</button>
+      </section>
+
+      <section class="admin-card">
+        <h2>Admin: Ganti Jadwal</h2>
+
+        <div class="admin-grid">
+          <label>
+            Password Admin
+            <input id="adminPassword" type="password" placeholder="Masukkan password admin" />
+          </label>
+
+          <label>
+            Tanggal
+            <input id="shiftDate" type="date" />
+          </label>
+
+          <label>
+            Shift
+            <select id="shiftName">
+              <option value="Siang">Siang</option>
+              <option value="Malam">Malam</option>
+            </select>
+          </label>
+
+          <label>
+            Petugas
+            <select id="guardName">
+              <option value="Made">Made</option>
+              <option value="Irfan">Irfan</option>
+              <option value="Hendra">Hendra</option>
+            </select>
+          </label>
+
+          <label class="wide">
+            Catatan
+            <input id="note" type="text" placeholder="Contoh: tukar jaga" />
+          </label>
+        </div>
+
+        <button id="saveButton">Simpan Perubahan</button>
+        <p id="message"></p>
+      </section>
+
+      <section>
+        <h2>Kalender</h2>
+        <div id="calendar" class="calendar"></div>
+      </section>
+
+      <section>
+        <h2>Rekap Bulanan</h2>
+        <div id="summary"></div>
+      </section>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
