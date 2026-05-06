@@ -218,7 +218,7 @@ Buat file `.env` di root project:
 ```env
 SUPABASE_URL=isi_project_url_supabase
 SUPABASE_SECRET_KEY=isi_secret_key_supabase
-ADMIN_PASSWORD=isi_password_admin
+ADMIN_PASSWORD=
 ```
 
 Contoh:
@@ -226,7 +226,7 @@ Contoh:
 ```env
 SUPABASE_URL=https://xxxxx.supabase.co
 SUPABASE_SECRET_KEY=sb_secret_xxxxxxxxx
-ADMIN_PASSWORD=password
+ADMIN_PASSWORD=
 ```
 
 Penting:
