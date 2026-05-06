@@ -1,7 +1,6 @@
-````md
 # Jadwal Jaga Satpam Webview
 
-Aplikasi web sederhana untuk menampilkan jadwal jaga satpam dalam bentuk kalender bulanan. Jadwal dibuat otomatis berdasarkan pola rotasi petugas, tetapi admin tetap dapat mengganti jadwal tertentu secara manual.
+Aplikasi web sederhana untuk menampilkan jadwal jaga satpam dalam bentuk kalender bulanan. Jadwal dibuat otomatis berdasarkan pola rotasi petugas, tetapi admin dapat mengganti jadwal tertentu secara manual.
 
 Project ini cocok untuk kebutuhan internal kantor, pos jaga, unit layanan, atau organisasi kecil yang membutuhkan jadwal piket sederhana berbasis web tanpa VPS.
 
@@ -12,12 +11,13 @@ Project ini cocok untuk kebutuhan internal kantor, pos jaga, unit layanan, atau 
   - Siang
   - Malam
 - Jadwal otomatis berdasarkan pola rotasi petugas
-- Mendukung perubahan jadwal manual oleh admin
+- Admin dapat mengganti petugas pada tanggal dan shift tertentu
+- Admin dapat mengembalikan jadwal ke pola otomatis
 - Perubahan jadwal disimpan di database
 - Jadwal yang diubah manual ditandai di kalender
 - Rekap jumlah jaga per bulan untuk setiap petugas
 - Halaman publik hanya untuk melihat jadwal
-- Halaman admin untuk mengganti atau mengembalikan jadwal
+- Halaman admin untuk mengelola perubahan jadwal
 - Dapat berjalan tanpa VPS menggunakan Netlify dan Supabase
 
 ## Teknologi yang Digunakan
@@ -34,14 +34,14 @@ Project ini cocok untuk kebutuhan internal kantor, pos jaga, unit layanan, atau 
 User membuka web
         |
         v
-Frontend Netlify
+Frontend di Netlify
         |
         v
 Netlify Functions
         |
         v
 Supabase Database
-````
+```
 
 Jadwal dasar tidak disimpan seluruhnya di database. Sistem menghitung jadwal otomatis dari tanggal awal dan urutan petugas.
 
@@ -60,7 +60,7 @@ Jumat Siang : Irfan
 Jumat Malam : Hendra
 ```
 
-Urutan petugas:
+Urutan petugas diatur di kode frontend:
 
 ```js
 const guards = ["Made", "Irfan", "Hendra"];
@@ -83,6 +83,7 @@ Catatan:
 ```text
 new Date(2026, 4, 6) berarti 6 Mei 2026
 karena bulan di JavaScript dimulai dari 0.
+
 Januari = 0
 Februari = 1
 Maret = 2
@@ -108,6 +109,7 @@ satpam-schedule/
 ├─ package.json
 ├─ netlify.toml
 ├─ .gitignore
+├─ .env.example
 ├─ src/
 │  ├─ main.js
 │  ├─ admin.js
@@ -129,9 +131,9 @@ satpam-schedule/
 
 Fungsi:
 
-* melihat kalender jadwal jaga
-* memilih bulan dan tahun
-* melihat rekap jumlah jaga bulanan
+- melihat kalender jadwal jaga
+- memilih bulan dan tahun
+- melihat rekap jumlah jaga bulanan
 
 ### Halaman Admin
 
@@ -141,27 +143,27 @@ Fungsi:
 
 Fungsi:
 
-* mengganti petugas pada tanggal dan shift tertentu
-* mengembalikan jadwal ke pola otomatis
-* menyimpan catatan perubahan
+- mengganti petugas pada tanggal dan shift tertentu
+- mengembalikan jadwal ke pola otomatis
+- menyimpan catatan perubahan
 
 ## Persyaratan
 
 Sebelum menjalankan project ini, pastikan sudah memiliki:
 
-* Node.js
-* Git
-* Akun GitHub
-* Akun Netlify
-* Akun Supabase
+- Node.js
+- Git
+- Akun GitHub
+- Akun Netlify
+- Akun Supabase
 
 ## Instalasi Lokal
 
 Clone repository:
 
 ```bash
-git clone https://github.com/USERNAME/satpam-schedule.git
-cd satpam-schedule
+git clone <URL_REPOSITORY_ANDA>
+cd <NAMA_FOLDER_PROJECT>
 ```
 
 Install dependency:
@@ -204,36 +206,66 @@ alter table public.schedule_overrides enable row level security;
 
 Tabel `schedule_overrides` digunakan untuk menyimpan jadwal yang diubah manual.
 
-Contoh data:
+Contoh struktur data:
 
-| shift_date | shift_name | guard_name | note               |
-| ---------- | ---------- | ---------- | ------------------ |
-| 2026-05-10 | Siang      | Made       | Tukar jaga         |
-| 2026-05-12 | Malam      | Hendra     | Penyesuaian jadwal |
+| Kolom | Fungsi |
+|---|---|
+| `shift_date` | Tanggal jadwal |
+| `shift_name` | Nama shift, misalnya Siang atau Malam |
+| `guard_name` | Nama petugas |
+| `note` | Catatan perubahan |
+| `created_at` | Waktu data dibuat |
 
 ## Environment Variables
 
-Buat file `.env` di root project:
+Project ini membutuhkan environment variables berikut:
+
+| Nama Variabel | Fungsi |
+|---|---|
+| `SUPABASE_URL` | URL project Supabase |
+| `SUPABASE_SECRET_KEY` | Secret key Supabase untuk Netlify Functions |
+| `ADMIN_PASSWORD` | Password sederhana untuk halaman admin |
+
+Nilai asli environment variables **tidak boleh ditulis di README, kode frontend, atau file yang di-commit ke GitHub**.
+
+## File Environment Lokal
+
+Buat file `.env.example` dengan isi berikut:
 
 ```env
-SUPABASE_URL=isi_project_url_supabase
-SUPABASE_SECRET_KEY=isi_secret_key_supabase
+SUPABASE_URL=
+SUPABASE_SECRET_KEY=
 ADMIN_PASSWORD=
 ```
 
-Contoh:
+Untuk menjalankan project secara lokal, salin `.env.example` menjadi `.env`.
 
-```env
-SUPABASE_URL=https://xxxxx.supabase.co
-SUPABASE_SECRET_KEY=sb_secret_xxxxxxxxx
-ADMIN_PASSWORD=
+Linux/macOS:
+
+```bash
+cp .env.example .env
 ```
+
+Windows Command Prompt:
+
+```cmd
+copy .env.example .env
+```
+
+Windows PowerShell:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Setelah itu, isi file `.env` dengan nilai dari project Supabase dan password admin yang ingin digunakan.
 
 Penting:
 
-* Jangan commit file `.env`
-* Jangan taruh `SUPABASE_SECRET_KEY` di frontend
-* Secret key hanya boleh digunakan di Netlify Functions
+- Jangan commit file `.env`
+- Jangan taruh secret key di frontend
+- Secret key hanya boleh digunakan di Netlify Functions
+- Untuk repository public, cukup commit `.env.example`, bukan `.env`
 
 Pastikan `.gitignore` berisi:
 
@@ -297,7 +329,7 @@ Build command: npm run build
 Publish directory: dist
 ```
 
-7. Tambahkan environment variables di Netlify:
+7. Tambahkan environment variables di Netlify melalui dashboard site:
 
 ```text
 SUPABASE_URL
@@ -305,7 +337,7 @@ SUPABASE_SECRET_KEY
 ADMIN_PASSWORD
 ```
 
-8. Deploy ulang site
+8. Trigger deploy ulang setelah environment variables ditambahkan.
 
 ## File `netlify.toml`
 
@@ -328,7 +360,7 @@ Project ini menggunakan konfigurasi Netlify berikut:
 Endpoint:
 
 ```text
-/.netlify/functions/get-schedule?month=5&year=2026
+/.netlify/functions/get-schedule?month=<BULAN>&year=<TAHUN>
 ```
 
 Method:
@@ -339,8 +371,8 @@ GET
 
 Fungsi:
 
-* mengambil data perubahan jadwal dari Supabase
-* hanya mengambil data sesuai bulan dan tahun yang dipilih
+- mengambil data perubahan jadwal dari Supabase
+- hanya mengambil data sesuai bulan dan tahun yang dipilih
 
 Contoh response:
 
@@ -377,7 +409,7 @@ Contoh body:
 
 ```json
 {
-  "adminPassword": "admin123",
+  "adminPassword": "<PASSWORD_DARI_FORM_ADMIN>",
   "shiftDate": "2026-05-10",
   "shiftName": "Siang",
   "guardName": "Made",
@@ -387,8 +419,8 @@ Contoh body:
 
 Fungsi:
 
-* menyimpan perubahan jadwal
-* jika tanggal dan shift sudah pernah diubah, data lama akan diperbarui
+- menyimpan perubahan jadwal
+- jika tanggal dan shift sudah pernah diubah, data lama akan diperbarui
 
 ### 3. Hapus Perubahan Jadwal
 
@@ -408,7 +440,7 @@ Contoh body:
 
 ```json
 {
-  "adminPassword": "admin123",
+  "adminPassword": "<PASSWORD_DARI_FORM_ADMIN>",
   "shiftDate": "2026-05-10",
   "shiftName": "Siang"
 }
@@ -416,8 +448,8 @@ Contoh body:
 
 Fungsi:
 
-* menghapus perubahan manual
-* jadwal akan kembali mengikuti pola otomatis
+- menghapus perubahan manual
+- jadwal akan kembali mengikuti pola otomatis
 
 ## Cara Mengubah Nama Petugas
 
@@ -436,7 +468,7 @@ const guards = ["Made", "Irfan", "Hendra"];
 Ubah sesuai kebutuhan, misalnya:
 
 ```js
-const guards = ["Budi", "Agus", "Rizal"];
+const guards = ["Petugas 1", "Petugas 2", "Petugas 3"];
 ```
 
 Lakukan juga penyesuaian di:
@@ -466,11 +498,11 @@ const shifts = ["Pagi", "Siang", "Malam"];
 
 Maka perlu menyesuaikan:
 
-* `src/main.js`
-* `admin.html`
-* `save-override.js`
-* `delete-override.js`
-* constraint database di Supabase
+- `src/main.js`
+- `admin.html`
+- `save-override.js`
+- `delete-override.js`
+- constraint database di Supabase
 
 ## Cara Mengubah Tanggal Dasar
 
@@ -532,15 +564,13 @@ Jadwal dasar dihitung otomatis.
 
 Jika ada data override di Supabase, maka jadwal otomatis diganti dengan data dari database.
 
-Contoh:
-
-Jadwal otomatis:
+Contoh jadwal otomatis:
 
 ```text
 10 Mei 2026 Siang = Irfan
 ```
 
-Data override:
+Contoh data override:
 
 ```text
 10 Mei 2026 Siang = Made
@@ -576,61 +606,62 @@ Untuk penggunaan internal kecil, pendekatan ini cukup sederhana dan mudah dijala
 
 Namun, untuk penggunaan produksi yang lebih serius, disarankan menambahkan:
 
-* login admin
-* Supabase Auth
-* role user/admin
-* audit log perubahan
-* pembatasan akses halaman admin
-* rate limiting
-* proteksi tambahan pada Netlify Functions
+- login admin
+- Supabase Auth
+- role user/admin
+- audit log perubahan
+- pembatasan akses halaman admin
+- rate limiting
+- proteksi tambahan pada Netlify Functions
 
-Jangan pernah menyimpan secret key di kode frontend.
+Jangan pernah menyimpan secret key di kode frontend atau repository public.
 
 ## Pengembangan Lanjutan
 
 Beberapa fitur yang dapat dikembangkan:
 
-* Login admin menggunakan Supabase Auth
-* Role pengguna:
-
-  * admin
-  * satpam
-  * viewer
-* Form pengajuan tukar jaga oleh satpam
-* Persetujuan atau penolakan tukar jaga oleh admin
-* Riwayat perubahan jadwal
-* Export jadwal ke PDF
-* Export jadwal ke Excel
-* Notifikasi WhatsApp atau Telegram
-* Tampilan mobile yang lebih baik
-* Mode cetak jadwal bulanan
-* Filter berdasarkan nama petugas
-* Rekap tahunan
-* Dashboard statistik jaga
-* Multi lokasi atau multi pos jaga
+- Login admin menggunakan Supabase Auth
+- Role pengguna:
+  - admin
+  - satpam
+  - viewer
+- Form pengajuan tukar jaga oleh satpam
+- Persetujuan atau penolakan tukar jaga oleh admin
+- Riwayat perubahan jadwal
+- Export jadwal ke PDF
+- Export jadwal ke Excel
+- Notifikasi WhatsApp atau Telegram
+- Tampilan mobile yang lebih baik
+- Mode cetak jadwal bulanan
+- Filter berdasarkan nama petugas
+- Rekap tahunan
+- Dashboard statistik jaga
+- Multi lokasi atau multi pos jaga
 
 ## Troubleshooting
 
-### 1. Kalender muncul, tetapi data perubahan tidak tampil
+### Kalender muncul, tetapi data perubahan tidak tampil
 
 Cek:
 
-* environment variables di Netlify
-* nama tabel Supabase
-* function `get-schedule.js`
-* apakah data memang ada di tabel `schedule_overrides`
+- environment variables di Netlify
+- nama tabel Supabase
+- function `get-schedule.js`
+- apakah data memang ada di tabel `schedule_overrides`
 
-### 2. Error password admin salah
+### Password admin salah
 
-Cek nilai:
+Cek nilai environment variable untuk password admin di:
 
 ```text
-ADMIN_PASSWORD
+Netlify Dashboard
+Site configuration
+Environment variables
 ```
 
-di file `.env` lokal atau di environment variables Netlify.
+Jangan menuliskan nilai password asli di README atau repository.
 
-### 3. Error Supabase unauthorized
+### Supabase unauthorized
 
 Cek:
 
@@ -639,9 +670,9 @@ SUPABASE_URL
 SUPABASE_SECRET_KEY
 ```
 
-Pastikan secret key benar dan tidak tertukar dengan anon key.
+Pastikan secret key benar dan digunakan hanya di Netlify Functions.
 
-### 4. Function tidak ditemukan
+### Function tidak ditemukan
 
 Pastikan struktur folder benar:
 
@@ -658,37 +689,35 @@ Pastikan `netlify.toml` sudah benar:
   directory = "netlify/functions"
 ```
 
-### 5. Setelah deploy, perubahan tidak muncul
+### Setelah deploy, perubahan tidak muncul
 
 Coba lakukan redeploy di Netlify:
 
 ```text
 Deploys
-↓
 Trigger deploy
-↓
 Deploy site
 ```
 
 Pastikan environment variables sudah dimasukkan di Netlify, bukan hanya di file `.env` lokal.
 
+### Build gagal karena secret scanning Netlify
+
+Pastikan tidak ada nilai asli environment variable di:
+
+- README
+- kode frontend
+- file dokumentasi
+- file hasil export
+- commit history terbaru
+
+Gunakan `.env.example` kosong untuk dokumentasi environment variables.
+
+Jika secret pernah terlanjur masuk repository public, segera ganti nilai secret tersebut di layanan terkait.
+
 ## Lisensi
 
 Project ini dapat menggunakan lisensi MIT agar bebas digunakan, dimodifikasi, dan dikembangkan kembali.
-
-Contoh file `LICENSE`:
-
-```text
-MIT License
-
-Copyright (c) 2026
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files, to deal in the Software
-without restriction, including without limitation the rights to use, copy,
-modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
-subject to the conditions of the MIT License.
-```
 
 ## Kontribusi
 
@@ -696,15 +725,13 @@ Kontribusi sangat terbuka.
 
 Beberapa cara berkontribusi:
 
-* membuat issue untuk bug
-* mengusulkan fitur baru
-* memperbaiki dokumentasi
-* menambahkan autentikasi
-* memperbaiki tampilan
-* menambahkan export PDF atau Excel
+- membuat issue untuk bug
+- mengusulkan fitur baru
+- memperbaiki dokumentasi
+- menambahkan autentikasi
+- memperbaiki tampilan
+- menambahkan export PDF atau Excel
 
 ## Kredit
 
 Project ini dibuat sebagai contoh aplikasi jadwal jaga sederhana menggunakan Netlify Functions dan Supabase.
-
-```
