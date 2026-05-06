@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Jadwal Jaga Satpam</title>
+  </head>
+  <body>
+    <div id="app">
+      <header class="header">
+        <div>
+          <h1>Admin Jadwal Jaga Satpam</h1>
+          <p>Ganti atau kembalikan jadwal ke pola otomatis.</p>
+        </div>
+
+        <a class="admin-link" href="/">Lihat Kalender</a>
+      </header>
+
+      <section class="admin-card">
+        <h2>Ganti Jadwal</h2>
+
+        <div class="admin-grid">
+          <label>
+            Password Admin
+            <input id="adminPassword" type="password" placeholder="Masukkan password admin" />
+          </label>
+
+          <label>
+            Tanggal
+            <input id="shiftDate" type="date" />
+          </label>
+
+          <label>
+            Shift
+            <select id="shiftName">
+              <option value="Siang">Siang</option>
+              <option value="Malam">Malam</option>
+            </select>
+          </label>
+
+          <label>
+            Petugas Pengganti
+            <select id="guardName">
+              <option value="Made">Made</option>
+              <option value="Irfan">Irfan</option>
+              <option value="Hendra">Hendra</option>
+            </select>
+          </label>
+
+          <label class="wide">
+            Catatan
+            <input id="note" type="text" placeholder="Contoh: tukar jaga, izin, penyesuaian jadwal" />
+          </label>
+        </div>
+
+        <div class="actions">
+          <button id="saveButton">Simpan Perubahan</button>
+          <button id="deleteButton" class="danger">Kembalikan ke Jadwal Otomatis</button>
+        </div>
+
+        <p id="message"></p>
+      </section>
+
+      <section>
+        <h2>Petunjuk</h2>
+        <div class="info-card">
+          <p>
+            Tombol <strong>Simpan Perubahan</strong> akan menyimpan petugas aktual untuk tanggal dan shift tertentu.
+          </p>
+          <p>
+            Tombol <strong>Kembalikan ke Jadwal Otomatis</strong> akan menghapus perubahan manual pada tanggal dan shift tersebut.
+          </p>
+        </div>
+      </section>
+    </div>
+
+    <script type="module" src="/src/admin.js"></script>
+  </body>
+</html>

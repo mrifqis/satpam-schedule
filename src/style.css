@@ -186,3 +186,44 @@ th {
     padding: 12px;
   }
 }
+
+.admin-link {
+  color: white;
+  background: rgba(255, 255, 255, 0.15);
+  text-decoration: none;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+button.danger {
+  background: #dc2626;
+}
+
+button.danger:hover {
+  background: #b91c1c;
+}
+
+.info-card {
+  background: white;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+}
+
+.info-card p {
+  margin-top: 0;
+}

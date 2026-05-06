@@ -28,10 +28,8 @@ const monthNames = [
 const monthSelect = document.querySelector("#monthSelect");
 const yearInput = document.querySelector("#yearInput");
 const loadButton = document.querySelector("#loadButton");
-const saveButton = document.querySelector("#saveButton");
 const calendarEl = document.querySelector("#calendar");
 const summaryEl = document.querySelector("#summary");
-const messageEl = document.querySelector("#message");
 
 const today = new Date();
 
@@ -46,7 +44,6 @@ monthSelect.value = String(today.getMonth() + 1);
 yearInput.value = String(today.getFullYear());
 
 loadButton.addEventListener("click", loadSchedule);
-saveButton.addEventListener("click", saveOverride);
 
 loadSchedule();
 
@@ -54,9 +51,9 @@ async function loadSchedule() {
   const month = Number(monthSelect.value);
   const year = Number(yearInput.value);
 
-  setMessage("Memuat jadwal...");
-
   try {
+    calendarEl.innerHTML = "<p>Memuat jadwal...</p>";
+
     const res = await fetch(`/.netlify/functions/get-schedule?month=${month}&year=${year}`);
     const json = await res.json();
 
@@ -68,52 +65,8 @@ async function loadSchedule() {
 
     renderCalendar(year, month, currentOverrides);
     renderSummary(year, month, currentOverrides);
-
-    setMessage("");
   } catch (error) {
-    setMessage(error.message, true);
-  }
-}
-
-async function saveOverride() {
-  const adminPassword = document.querySelector("#adminPassword").value;
-  const shiftDate = document.querySelector("#shiftDate").value;
-  const shiftName = document.querySelector("#shiftName").value;
-  const guardName = document.querySelector("#guardName").value;
-  const note = document.querySelector("#note").value;
-
-  setMessage("Menyimpan perubahan...");
-
-  try {
-    const res = await fetch("/.netlify/functions/save-override", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        adminPassword,
-        shiftDate,
-        shiftName,
-        guardName,
-        note
-      })
-    });
-
-    const json = await res.json();
-
-    if (!res.ok) {
-      throw new Error(json.error || "Gagal menyimpan perubahan.");
-    }
-
-    setMessage("Perubahan berhasil disimpan.");
-
-    const savedDate = new Date(`${shiftDate}T00:00:00`);
-    monthSelect.value = String(savedDate.getMonth() + 1);
-    yearInput.value = String(savedDate.getFullYear());
-
-    await loadSchedule();
-  } catch (error) {
-    setMessage(error.message, true);
+    calendarEl.innerHTML = `<p class="error">${error.message}</p>`;
   }
 }
 
@@ -124,14 +77,13 @@ function renderCalendar(year, month, overrides) {
 
   for (let day = 1; day <= daysInMonth; day++) {
     const date = new Date(year, month - 1, day);
-    const dateString = toDateKey(date);
     const dayName = getDayName(date);
 
     const card = document.createElement("div");
     card.className = "day-card";
 
     const title = document.createElement("h3");
-    title.textContent = `${dayName}, ${day} ${monthNames[month - 1]}`;
+    title.textContent = `${dayName}, ${day} ${monthNames[month - 1]} ${year}`;
     card.appendChild(title);
 
     shifts.forEach((shiftName) => {
@@ -249,9 +201,4 @@ function getDayName(date) {
   return new Intl.DateTimeFormat("id-ID", {
     weekday: "long"
   }).format(date);
-}
-
-function setMessage(text, isError = false) {
-  messageEl.textContent = text;
-  messageEl.className = isError ? "error" : "success";
 }
