@@ -162,8 +162,8 @@ Sebelum menjalankan project ini, pastikan sudah memiliki:
 Clone repository:
 
 ```bash
-git clone <URL_REPOSITORY_ANDA>
-cd <NAMA_FOLDER_PROJECT>
+git clone https://github.com/mrifqis/satpam-schedule
+cd satpam-schedule
 ```
 
 Install dependency:
