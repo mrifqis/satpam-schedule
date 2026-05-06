@@ -226,7 +226,7 @@ Contoh:
 ```env
 SUPABASE_URL=https://xxxxx.supabase.co
 SUPABASE_SECRET_KEY=sb_secret_xxxxxxxxx
-ADMIN_PASSWORD=admin123
+ADMIN_PASSWORD=password
 ```
 
 Penting:
